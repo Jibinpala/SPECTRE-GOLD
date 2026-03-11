@@ -18,40 +18,43 @@
 
 <body>
 
-    <div id="master-gate"
-        style="position:fixed; top:0; left:0; width:100%; height:100%; background:#0a0a09; z-index:99999; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:2rem; text-align:center; transition: opacity 0.5s ease;">
-        <img src="logo.png" alt="S-Logo" class="logo" style="width:120px; height:120px; margin-bottom:2rem;">
-        <h2
-            style="color:var(--primary); font-family:'JetBrains Mono', monospace; margin-bottom:0.5rem; letter-spacing:3px;">
-            S-CORE CLIENT PORTAL</h2>
-        <p
-            style="color:var(--text-muted); font-size:0.75rem; margin-bottom:2rem; max-width:300px; text-transform:uppercase; letter-spacing:1px;">
-            Encrypted Session Authentication Required</p>
+    <div class="master-gate-content">
+        <img src="logo.png" alt="S-Logo" class="gate-logo">
+        <h2 class="gate-title">S-CORE CLIENT PORTAL</h2>
+        <p class="gate-subtitle">Encrypted Session Authentication Required</p>
 
-        <div class="input-group" style="max-width:320px; width:100%;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <label style="font-size:0.6rem; color:var(--primary); letter-spacing:2px;">SELECT ACCESS MODE</label>
-                <span style="font-size:0.6rem; color:var(--text-muted);">SECURE_V5.1</span>
+        <div class="gate-controls">
+            <div class="input-group">
+                <div class="group-header">
+                    <label>ACCESS MODE</label>
+                    <span class="version-tag">SECURE_V5.8</span>
+                </div>
+                <select id="access-mode" class="gate-select">
+                    <option value="client">CLIENT ACCESS</option>
+                    <option value="admin">ADMINISTRATOR</option>
+                </select>
             </div>
-            <select id="access-mode"
-                style="width:100%; background:rgba(212,175,55,0.05); border:1px solid var(--glass-border); padding:10px; color:var(--primary); border-radius:10px; margin-bottom:15px; font-family:'Outfit',sans-serif;">
-                <option value="client">CLIENT ACCESS</option>
-                <option value="admin">ADMINISTRATOR</option>
-            </select>
 
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <input type="password" id="master-key-input" placeholder="ENTER CLIENT KEY"
-                    style="text-align:center; letter-spacing:5px; border-color:var(--primary); flex:1; margin-bottom:0;">
-                <button class="key-gen-btn" onclick="togglePass('master-key-input', this)" title="Toggle Visibility"
-                    style="margin-left: 10px;">
-                    <ion-icon name="eye-outline" style="font-size:1.8rem;"></ion-icon>
-                </button>
+            <div class="input-group">
+                <div class="input-with-actions">
+                    <input type="password" id="master-key-input" placeholder="ENTER ACCESS KEY">
+                    <div class="action-buttons-overlay">
+                        <button class="key-gen-btn" onclick="togglePass('master-key-input', this)"
+                            title="Toggle Visibility">
+                            <ion-icon name="eye-outline"></ion-icon>
+                        </button>
+                    </div>
+                </div>
             </div>
-            <button onclick="checkMasterKey()" class="btn btn-primary" style="margin-top:1.5rem;">AUTHORIZE
-                SESSION</button>
+
+            <button onclick="checkMasterKey()" class="btn btn-primary gate-btn">
+                <ion-icon name="shield-checkmark-outline"></ion-icon>
+                <span>AUTHORIZE SESSION</span>
+            </button>
         </div>
-        <p id="gate-error" style="color:#ef4444; margin-top:20px; font-size:0.8rem; display:none;">AUTH_FAILURE: INVALID
-            CLIENT KEY</p>
+
+        <p id="gate-error" class="gate-error-msg">AUTH_FAILURE: INVALID KEY</p>
+    </div>
     </div>
 
     <div class="container" id="main-content" style="filter: blur(20px); pointer-events: none; transition: 1s ease;">
@@ -526,7 +529,7 @@
     <canvas id="canvas" class="hidden-canvas"></canvas>
     <canvas id="orig-canvas" class="hidden-canvas"></canvas>
 
-    <script src="script.js?v=5.8"></script>
+    <script src="script.js?v=5.9"></script>
 </body>
 
 </html>

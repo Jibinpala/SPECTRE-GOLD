@@ -134,9 +134,123 @@ header {
     justify-content: center;
 }
 
+
+
 .key-gen-btn:hover {
     color: white;
-    transform: rotate(20deg);
+}
+
+/* --- 🛡️ MASTER GATE PROFESSIONAL UI --- */
+#master-gate {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #0a0a09;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+    transition: opacity 0.5s ease;
+}
+
+.master-gate-content {
+    max-width: 360px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gate-logo {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 2rem;
+    filter: drop-shadow(0 0 15px var(--glow));
+}
+
+.gate-title {
+    color: var(--primary);
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 0.5rem;
+    letter-spacing: 4px;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.gate-subtitle {
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    margin-bottom: 2.5rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.gate-controls {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 0 4px;
+}
+
+.group-header label {
+    font-size: 0.65rem;
+    color: var(--primary);
+    letter-spacing: 2px;
+    font-weight: 700;
+}
+
+.version-tag {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.gate-select {
+    width: 100%;
+    background: rgba(212, 175, 55, 0.05);
+    border: 1px solid var(--glass-border);
+    padding: 12px;
+    color: var(--primary);
+    border-radius: 12px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.gate-select:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: rgba(212, 175, 55, 0.1);
+}
+
+.gate-btn {
+    margin-top: 0.5rem;
+    height: 55px;
+    letter-spacing: 1px;
+}
+
+.gate-error-msg {
+    color: #ef4444;
+    margin-top: 20px;
+    font-size: 0.75rem;
+    display: none;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 1px;
 }
 
 
