@@ -108,9 +108,11 @@
                     <textarea id="secret-message" rows="3" placeholder="AES-256 Secure Message..."></textarea>
                 </div>
                 <div class="input-group">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <label>AES Passphrase</label>
-                        <div style="display:flex; gap:5px;">
+                    <label>AES Passphrase</label>
+                    <div class="input-with-actions">
+                        <input type="password" id="embed-passphrase" placeholder="Highly Sensitive Key"
+                            oninput="checkEntropy(this, 'pass-strength-1')">
+                        <div class="action-buttons-overlay">
                             <button class="key-gen-btn" onclick="togglePass('embed-passphrase', this)"
                                 title="Toggle Visibility">
                                 <ion-icon name="eye-outline"></ion-icon>
@@ -122,11 +124,8 @@
                             </button>
                         </div>
                     </div>
-                    <input type="password" id="embed-passphrase" placeholder="Highly Sensitive Key"
-                        oninput="checkEntropy(this, 'pass-strength-1')">
-                    <div
-                        style="width:100%; height:4px; background:rgba(255,255,255,0.05); margin-top:5px; border-radius:2px; overflow:hidden;">
-                        <div id="pass-strength-1" style="width:0%; height:100%; transition:0.3s;"></div>
+                    <div class="strength-meter-container">
+                        <div id="pass-strength-1" class="strength-bar"></div>
                     </div>
                 </div>
                 <button id="btn-encode" class="btn btn-primary">
@@ -152,18 +151,22 @@
                     <input type="file" id="decode-file-input" accept="image/*" hidden>
                 </div>
                 <div class="input-group">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <label>Authentication Key</label>
-                        <button class="key-gen-btn" onclick="togglePass('decode-passphrase', this)"
-                            title="Toggle Visibility">
-                            <ion-icon name="eye-outline"></ion-icon>
-                        </button>
+                    <label>Authentication Key</label>
+                    <div class="input-with-actions">
+                        <input type="password" id="decode-passphrase" placeholder="Key used for encoding"
+                            oninput="checkEntropy(this, 'pass-strength-extract')">
+                        <div class="action-buttons-overlay">
+                            <button class="key-gen-btn" onclick="togglePass('decode-passphrase', this)"
+                                title="Toggle Visibility">
+                                <ion-icon name="eye-outline"></ion-icon>
+                            </button>
+                            <button class="key-gen-btn" onclick="pasteTo('decode-passphrase')" title="Paste Key">
+                                <ion-icon name="clipboard-outline"></ion-icon>
+                            </button>
+                        </div>
                     </div>
-                    <input type="password" id="decode-passphrase" placeholder="Key used for encoding"
-                        oninput="checkEntropy(this, 'pass-strength-extract')">
-                    <div
-                        style="width:100%; height:4px; background:rgba(255,255,255,0.05); margin-top:5px; border-radius:2px; overflow:hidden;">
-                        <div id="pass-strength-extract" style="width:0%; height:100%; transition:0.3s;"></div>
+                    <div class="strength-meter-container">
+                        <div id="pass-strength-extract" class="strength-bar"></div>
                     </div>
                 </div>
                 <button id="btn-decode" class="btn btn-secondary">
@@ -189,14 +192,16 @@
                     <textarea id="audio-payload" rows="4" placeholder="Text to hide in audio..."></textarea>
                 </div>
                 <div class="input-group">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <label>Encryption Key</label>
-                        <button class="key-gen-btn" onclick="togglePass('audio-pass-enc', this)"
-                            title="Toggle Visibility">
-                            <ion-icon name="eye-outline"></ion-icon>
-                        </button>
+                    <label>Encryption Key</label>
+                    <div class="input-with-actions">
+                        <input type="password" id="audio-pass-enc" placeholder="AES Protection">
+                        <div class="action-buttons-overlay">
+                            <button class="key-gen-btn" onclick="togglePass('audio-pass-enc', this)"
+                                title="Toggle Visibility">
+                                <ion-icon name="eye-outline"></ion-icon>
+                            </button>
+                        </div>
                     </div>
-                    <input type="password" id="audio-pass-enc" placeholder="AES Protection">
                 </div>
                 <button id="btn-audio-encode" class="btn btn-primary">
                     <ion-icon name="pulse-outline"></ion-icon><span>Hide in Audio</span>
@@ -219,14 +224,16 @@
                     <input type="file" id="audio-stego-input" accept=".wav" hidden>
                 </div>
                 <div class="input-group">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <label>Passphrase</label>
-                        <button class="key-gen-btn" onclick="togglePass('audio-pass-dec', this)"
-                            title="Toggle Visibility">
-                            <ion-icon name="eye-outline"></ion-icon>
-                        </button>
+                    <label>Passphrase</label>
+                    <div class="input-with-actions">
+                        <input type="password" id="audio-pass-dec" placeholder="Key">
+                        <div class="action-buttons-overlay">
+                            <button class="key-gen-btn" onclick="togglePass('audio-pass-dec', this)"
+                                title="Toggle Visibility">
+                                <ion-icon name="eye-outline"></ion-icon>
+                            </button>
+                        </div>
                     </div>
-                    <input type="password" id="audio-pass-dec" placeholder="Key">
                 </div>
                 <button id="btn-audio-decode" class="btn btn-secondary">
                     <ion-icon name="analytics-outline"></ion-icon><span>Extract Secret</span>
@@ -250,14 +257,16 @@
                     <textarea id="text-secret" rows="2" placeholder="Private secret to hide..."></textarea>
                 </div>
                 <div class="input-group">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <label>AES Passphrase</label>
-                        <button class="key-gen-btn" onclick="togglePass('text-hide-pass', this)"
-                            title="Toggle Visibility">
-                            <ion-icon name="eye-outline"></ion-icon>
-                        </button>
+                    <label>AES Passphrase</label>
+                    <div class="input-with-actions">
+                        <input type="password" id="text-hide-pass" placeholder="AES Passphrase">
+                        <div class="action-buttons-overlay">
+                            <button class="key-gen-btn" onclick="togglePass('text-hide-pass', this)"
+                                title="Toggle Visibility">
+                                <ion-icon name="eye-outline"></ion-icon>
+                            </button>
+                        </div>
                     </div>
-                    <input type="password" id="text-hide-pass" placeholder="AES Passphrase">
                 </div>
                 <button id="btn-text-hide" class="btn btn-primary">
                     <ion-icon name="infinite-outline"></ion-icon><span>Create Invisible Text</span>
@@ -282,14 +291,16 @@
                     <textarea id="text-input-reveal" rows="8" placeholder="Paste text containing secrets..."></textarea>
                 </div>
                 <div class="input-group">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <label>Passphrase</label>
-                        <button class="key-gen-btn" onclick="togglePass('text-reveal-pass', this)"
-                            title="Toggle Visibility">
-                            <ion-icon name="eye-outline"></ion-icon>
-                        </button>
+                    <label>Passphrase</label>
+                    <div class="input-with-actions">
+                        <input type="password" id="text-reveal-pass" placeholder="Passphrase">
+                        <div class="action-buttons-overlay">
+                            <button class="key-gen-btn" onclick="togglePass('text-reveal-pass', this)"
+                                title="Toggle Visibility">
+                                <ion-icon name="eye-outline"></ion-icon>
+                            </button>
+                        </div>
                     </div>
-                    <input type="password" id="text-reveal-pass" placeholder="Passphrase">
                 </div>
                 <button id="btn-text-reveal" class="btn btn-secondary">
                     <ion-icon name="shield-checkmark-outline"></ion-icon><span>Run Revealer</span>
@@ -514,7 +525,7 @@
     <canvas id="canvas" class="hidden-canvas"></canvas>
     <canvas id="orig-canvas" class="hidden-canvas"></canvas>
 
-    <script src="script.js?v=5.6"></script>
+    <script src="script.js?v=5.7"></script>
 </body>
 
 </html>
