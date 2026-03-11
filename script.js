@@ -33,7 +33,7 @@ window.checkMasterKey = () => {
         gate.style.opacity = '0';
 
         // --- 🔒 SESSION PERSISTENCE ---
-        sessionStorage.setItem('spectre_auth', 'true');
+        localStorage.setItem('spectre_auth', 'true');
 
         showToast(`IDENTITY VERIFIED: ${mode.toUpperCase()} ACCESS GRANTED`);
 
@@ -66,7 +66,7 @@ window.toggleFullscreen = () => {
 };
 
 window.logout = () => {
-    sessionStorage.removeItem('spectre_auth');
+    localStorage.removeItem('spectre_auth');
     showToast('SESSION TERMINATED: SECURE LOGOUT');
     setTimeout(() => location.reload(), 1000);
 };
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 🔑 SESSION RELOAD CHECK ---
     const gate = document.getElementById('master-gate');
     const main = document.getElementById('main-content');
-    if (sessionStorage.getItem('spectre_auth') === 'true' && gate && main) {
+    if (localStorage.getItem('spectre_auth') === 'true' && gate && main) {
         gate.style.display = 'none';
         main.style.filter = 'none';
         main.style.pointerEvents = 'all';
