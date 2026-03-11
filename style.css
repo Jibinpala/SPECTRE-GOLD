@@ -771,6 +771,12 @@ footer p {
         grid-template-columns: 1fr;
     }
 
+    /* Sticker Lab responsive fix */
+    .sticker-lab-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+    }
+
     .toast {
         width: calc(100% - 2rem);
         right: 1rem;
