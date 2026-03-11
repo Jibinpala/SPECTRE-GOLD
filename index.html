@@ -59,10 +59,15 @@
             <img src="logo.png" alt="S-Logo" class="logo">
             <h1>SPECTRE</h1>
             <p class="subtitle">Secure communication: Deniable payloads, Offline Mode, & SHA-256 Integrity.</p>
-            <button onclick="toggleFullscreen()" class="key-gen-btn"
-                style="position:absolute; top:0; right:0; font-size:1.5rem;" title="Go Fullscreen">
-                <ion-icon name="expand-outline"></ion-icon>
-            </button>
+            <div style="position:absolute; top:0; right:0; display:flex; gap:10px;">
+                <button onclick="logout()" class="key-gen-btn" style="font-size:1.5rem;" title="Logout Session">
+                    <ion-icon name="log-out-outline"></ion-icon>
+                </button>
+                <button onclick="toggleFullscreen()" class="key-gen-btn" style="font-size:1.5rem;"
+                    title="Go Fullscreen">
+                    <ion-icon name="expand-outline"></ion-icon>
+                </button>
+            </div>
         </header>
 
         <div class="tabs-navigation">
@@ -509,7 +514,7 @@
     <canvas id="canvas" class="hidden-canvas"></canvas>
     <canvas id="orig-canvas" class="hidden-canvas"></canvas>
 
-    <script src="script.js?v=5.5"></script>
+    <script src="script.js?v=5.6"></script>
 </body>
 
 </html>

@@ -65,6 +65,12 @@ window.toggleFullscreen = () => {
     }
 };
 
+window.logout = () => {
+    sessionStorage.removeItem('spectre_auth');
+    showToast('SESSION TERMINATED: SECURE LOGOUT');
+    setTimeout(() => location.reload(), 1000);
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     // --- 🔑 SESSION RELOAD CHECK ---
     const gate = document.getElementById('master-gate');
