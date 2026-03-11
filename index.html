@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPECTRE | Elite Gold Steganography v5.0</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#d4af37">
+
+    <link rel="stylesheet" href="style.css">
+    <!-- Ionicons -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <!-- CryptoJS for AES-256 Encryption -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+
+<body>
+
+    <div id="master-gate"
+        style="position:fixed; top:0; left:0; width:100%; height:100%; background:#0a0a09; z-index:99999; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:2rem; text-align:center; transition: opacity 0.5s ease;">
+        <img src="logo.png" alt="S-Logo" class="logo" style="width:120px; height:120px; margin-bottom:2rem;">
+        <h2
+            style="color:var(--primary); font-family:'JetBrains Mono', monospace; margin-bottom:0.5rem; letter-spacing:3px;">
+            S-CORE CLIENT PORTAL</h2>
+        <p
+            style="color:var(--text-muted); font-size:0.75rem; margin-bottom:2rem; max-width:300px; text-transform:uppercase; letter-spacing:1px;">
+            Encrypted Session Authentication Required</p>
+
+        <div class="input-group" style="max-width:320px; width:100%;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <label style="font-size:0.6rem; color:var(--primary); letter-spacing:2px;">SELECT ACCESS MODE</label>
+                <span style="font-size:0.6rem; color:var(--text-muted);">SECURE_V5.1</span>
+            </div>
+            <select id="access-mode"
+                style="width:100%; background:rgba(212,175,55,0.05); border:1px solid var(--glass-border); padding:10px; color:var(--primary); border-radius:10px; margin-bottom:15px; font-family:'Outfit',sans-serif;">
+                <option value="client">CLIENT ACCESS</option>
+                <option value="admin">ADMINISTRATOR</option>
+            </select>
+
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <input type="password" id="master-key-input" placeholder="ENTER CLIENT KEY"
+                    style="text-align:center; letter-spacing:5px; border-color:var(--primary); flex:1; margin-bottom:0;">
+                <button class="key-gen-btn" onclick="togglePass('master-key-input', this)" title="Toggle Visibility"
+                    style="margin-left: 10px;">
+                    <ion-icon name="eye-outline" style="font-size:1.8rem;"></ion-icon>
+                </button>
+            </div>
+            <button onclick="checkMasterKey()" class="btn btn-primary" style="margin-top:1.5rem;">AUTHORIZE
+                SESSION</button>
+        </div>
+        <p id="gate-error" style="color:#ef4444; margin-top:20px; font-size:0.8rem; display:none;">AUTH_FAILURE: INVALID
+            CLIENT KEY</p>
+    </div>
+
+    <div class="container" id="main-content" style="filter: blur(20px); pointer-events: none; transition: 1s ease;">
+        <header style="position:relative;">
+            <img src="logo.png" alt="S-Logo" class="logo">
+            <h1>SPECTRE</h1>
+            <p class="subtitle">Secure communication: Deniable payloads, Offline Mode, & SHA-256 Integrity.</p>
+            <button onclick="toggleFullscreen()" class="key-gen-btn"
+                style="position:absolute; top:0; right:0; font-size:1.5rem;" title="Go Fullscreen">
+                <ion-icon name="expand-outline"></ion-icon>
+            </button>
+        </header>
+
+        <div class="tabs-navigation">
+            <nav class="tabs">
+                <button class="tab-btn active" data-tab="image-mode">
+                    <ion-icon name="image-outline"></ion-icon> Image / GIF
+                </button>
+                <button class="tab-btn" data-tab="audio-mode">
+                    <ion-icon name="musical-notes-outline"></ion-icon> Audio
+                </button>
+                <button class="tab-btn" data-tab="text-mode">
+                    <ion-icon name="text-outline"></ion-icon> Text
+                </button>
+                <button class="tab-btn" data-tab="scanner-mode">
+                    <ion-icon name="shield-outline"></ion-icon> Scanner
+                </button>
+                <button class="tab-btn" data-tab="sticker-mode">
+                    <ion-icon name="sparkles-outline"></ion-icon> Stickers
+                </button>
+                <button class="tab-btn" data-tab="deniable-mode">
+                    <ion-icon name="eye-off-outline"></ion-icon> Deniable
+                </button>
+            </nav>
+        </div>
+
+        <!-- IMAGE MODE SECTION -->
+        <main id="image-mode" class="tool-section active">
+            <section class="card">
+                <div class="card-title"><ion-icon name="lock-closed-outline"></ion-icon> Secure Embed</div>
+                <div class="upload-area" id="embed-upload-area">
+                    <ion-icon name="add-circle-outline" style="font-size:3rem; color:var(--primary);"></ion-icon>
+                    <p>Target Carrier Image or GIF</p>
+                    <img id="embed-preview" src="" alt="Preview" style="display:none; margin-top:1rem;">
+                    <input type="file" id="embed-file-input" accept="image/*" hidden>
+                </div>
+                <div class="input-group">
+                    <label>Secret Payload</label>
+                    <textarea id="secret-message" rows="3" placeholder="AES-256 Secure Message..."></textarea>
+                </div>
+                <div class="input-group">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <label>AES Passphrase</label>
+                        <div style="display:flex; gap:5px;">
+                            <button class="key-gen-btn" onclick="togglePass('embed-passphrase', this)"
+                                title="Toggle Visibility">
+                                <ion-icon name="eye-outline"></ion-icon>
+                            </button>
+                            <button class="key-gen-btn"
+                                onclick="generateSecureKey('embed-passphrase', 'pass-strength-1');"
+                                title="Generate Secure Key">
+                                <ion-icon name="color-wand-outline"></ion-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <input type="password" id="embed-passphrase" placeholder="Highly Sensitive Key"
+                        oninput="checkEntropy(this, 'pass-strength-1')">
+                    <div
+                        style="width:100%; height:4px; background:rgba(255,255,255,0.05); margin-top:5px; border-radius:2px; overflow:hidden;">
+                        <div id="pass-strength-1" style="width:0%; height:100%; transition:0.3s;"></div>
+                    </div>
+                </div>
+                <button id="btn-encode" class="btn btn-primary">
+                    <ion-icon name="flask-outline"></ion-icon><span>Inject Payload</span>
+                </button>
+                <div class="capacity-container" style="margin-top:10px; display:none;" id="image-capacity-box">
+                    <label style="font-size:0.7rem; color:var(--text-muted);">IMAGE CAPACITY</label>
+                    <div
+                        style="width:100%; height:4px; background:rgba(255,255,255,0.1); border-radius:2px; margin-top:4px;">
+                        <div id="image-capacity-bar"
+                            style="width:0%; height:100%; background:var(--primary); transition:0.3s; box-shadow:0 0 10px var(--primary);">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card">
+                <div class="card-title"><ion-icon name="key-outline"></ion-icon> Extraction Engine</div>
+                <div class="upload-area" id="decode-upload-area">
+                    <ion-icon name="cloud-upload-outline" style="font-size:3rem; color:var(--primary);"></ion-icon>
+                    <p>Analyze Carrier</p>
+                    <img id="decode-preview" src="" alt="Preview" style="display:none; margin-top:1rem;">
+                    <input type="file" id="decode-file-input" accept="image/*" hidden>
+                </div>
+                <div class="input-group">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <label>Authentication Key</label>
+                        <button class="key-gen-btn" onclick="togglePass('decode-passphrase', this)"
+                            title="Toggle Visibility">
+                            <ion-icon name="eye-outline"></ion-icon>
+                        </button>
+                    </div>
+                    <input type="password" id="decode-passphrase" placeholder="Key used for encoding"
+                        oninput="checkEntropy(this, 'pass-strength-extract')">
+                    <div
+                        style="width:100%; height:4px; background:rgba(255,255,255,0.05); margin-top:5px; border-radius:2px; overflow:hidden;">
+                        <div id="pass-strength-extract" style="width:0%; height:100%; transition:0.3s;"></div>
+                    </div>
+                </div>
+                <button id="btn-decode" class="btn btn-secondary">
+                    <ion-icon name="search-outline"></ion-icon><span>Extract Data</span>
+                </button>
+                <div id="decoded-result-box" style="display: none; margin-top: 1rem;">
+                    <div id="extracted-text" class="output-box"></div>
+                </div>
+            </section>
+        </main>
+
+        <!-- AUDIO MODE SECTION -->
+        <main id="audio-mode" class="tool-section">
+            <section class="card">
+                <div class="card-title"><ion-icon name="mic-outline"></ion-icon> Audio Embedder</div>
+                <div class="upload-area" id="audio-embed-area">
+                    <ion-icon name="musical-note-outline" style="font-size:3rem; color:var(--primary);"></ion-icon>
+                    <p>Select Carrier (.wav)</p>
+                    <input type="file" id="audio-carrier-input" accept=".wav" hidden>
+                </div>
+                <div class="input-group">
+                    <label>Secret Message</label>
+                    <textarea id="audio-payload" rows="4" placeholder="Text to hide in audio..."></textarea>
+                </div>
+                <div class="input-group">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <label>Encryption Key</label>
+                        <button class="key-gen-btn" onclick="togglePass('audio-pass-enc', this)"
+                            title="Toggle Visibility">
+                            <ion-icon name="eye-outline"></ion-icon>
+                        </button>
+                    </div>
+                    <input type="password" id="audio-pass-enc" placeholder="AES Protection">
+                </div>
+                <button id="btn-audio-encode" class="btn btn-primary">
+                    <ion-icon name="pulse-outline"></ion-icon><span>Hide in Audio</span>
+                </button>
+            </section>
+            <section class="card">
+                <div class="card-title"><ion-icon name="play-outline"></ion-icon> Audio Extractor</div>
+                <div class="upload-area" id="audio-extract-area">
+                    <ion-icon name="ear-outline" style="font-size:3rem; color:var(--primary);"></ion-icon>
+                    <p>Upload Encoded WAV</p>
+                    <input type="file" id="audio-stego-input" accept=".wav" hidden>
+                </div>
+                <div class="input-group">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <label>Passphrase</label>
+                        <button class="key-gen-btn" onclick="togglePass('audio-pass-dec', this)"
+                            title="Toggle Visibility">
+                            <ion-icon name="eye-outline"></ion-icon>
+                        </button>
+                    </div>
+                    <input type="password" id="audio-pass-dec" placeholder="Key">
+                </div>
+                <button id="btn-audio-decode" class="btn btn-secondary">
+                    <ion-icon name="analytics-outline"></ion-icon><span>Extract Secret</span>
+                </button>
+                <div id="audio-result-box" style="display:none; margin-top:15px;">
+                    <div id="audio-extracted-output" class="output-box"></div>
+                </div>
+            </section>
+        </main>
+
+        <!-- TEXT MODE SECTION -->
+        <main id="text-mode" class="tool-section">
+            <section class="card">
+                <div class="card-title"><ion-icon name="document-text-outline"></ion-icon> Stealth Text Injection</div>
+                <div class="input-group">
+                    <label>Public Cover Message</label>
+                    <textarea id="text-cover" rows="3" placeholder="Public cover text..."></textarea>
+                </div>
+                <div class="input-group">
+                    <label>Private Secret</label>
+                    <textarea id="text-secret" rows="2" placeholder="Private secret to hide..."></textarea>
+                </div>
+                <div class="input-group">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <label>AES Passphrase</label>
+                        <button class="key-gen-btn" onclick="togglePass('text-hide-pass', this)"
+                            title="Toggle Visibility">
+                            <ion-icon name="eye-outline"></ion-icon>
+                        </button>
+                    </div>
+                    <input type="password" id="text-hide-pass" placeholder="AES Passphrase">
+                </div>
+                <button id="btn-text-hide" class="btn btn-primary">
+                    <ion-icon name="infinite-outline"></ion-icon><span>Create Invisible Text</span>
+                </button>
+                <div id="stego-text-result" style="display:none; margin-top:1rem;">
+                    <div id="stego-text-output" class="output-box"></div>
+                    <button id="btn-copy-text" class="btn btn-secondary"
+                        style="margin-top:10px; width:100%; border-style:dashed;">
+                        <ion-icon name="copy-outline"></ion-icon> Copy Stealth Text
+                    </button>
+                </div>
+            </section>
+            <section class="card">
+                <div class="card-title"><ion-icon name="scan-outline"></ion-icon> Reveal from Text</div>
+                <div class="input-group">
+                    <label>Paste Stego-Text</label>
+                    <textarea id="text-input-reveal" rows="8" placeholder="Paste text containing secrets..."></textarea>
+                </div>
+                <div class="input-group">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <label>Passphrase</label>
+                        <button class="key-gen-btn" onclick="togglePass('text-reveal-pass', this)"
+                            title="Toggle Visibility">
+                            <ion-icon name="eye-outline"></ion-icon>
+                        </button>
+                    </div>
+                    <input type="password" id="text-reveal-pass" placeholder="Passphrase">
+                </div>
+                <button id="btn-text-reveal" class="btn btn-secondary">
+                    <ion-icon name="shield-checkmark-outline"></ion-icon><span>Run Revealer</span>
+                </button>
+                <div id="text-reveal-result" style="display:none; margin-top:1rem;">
+                    <div id="text-extracted-output" class="output-box"></div>
+                </div>
+            </section>
+        </main>
+
+        <!-- SCANNER MODE SECTION -->
+        <main id="scanner-mode" class="tool-section">
+            <section class="card" style="grid-column: span 2;">
+                <div class="card-title"><ion-icon name="search-circle-outline"></ion-icon> LSB Forensic Plane Scan</div>
+                <div class="upload-area" id="scanner-upload-area">
+                    <ion-icon name="scan-outline" style="font-size:3rem; color:var(--primary);"></ion-icon>
+                    <p>Upload Image to Deep Scan for Noise</p>
+                    <input type="file" id="scanner-file-input" accept="image/*" hidden>
+                </div>
+                <div class="scanner-grid">
+                    <div
+                        style="background:#000; border-radius:12px; border:1px solid var(--glass-border); overflow:hidden; display:flex; align-items:center; justify-content:center;">
+                        <canvas id="scanner-canvas" style="max-height:300px; width:100%; object-fit:contain;"></canvas>
+                    </div>
+                    <div id="scanner-report" class="output-box"
+                        style="height: 300px; color: var(--text-muted); font-size: 0.8rem; overflow-y:auto;">
+                        Analyze any image to detect potential data injections. Select a plane below.
+                    </div>
+                </div>
+                <div class="scanner-controls">
+                    <button id="btn-scan-r" class="btn btn-secondary">Red Plane</button>
+                    <button id="btn-scan-g" class="btn btn-secondary">Green Plane</button>
+                    <button id="btn-scan-b" class="btn btn-secondary">Blue Plane</button>
+                    <button id="btn-scan-a" class="btn btn-secondary" style="border:1px solid var(--primary);">Reset
+                        Scale</button>
+                </div>
+            </section>
+        </main>
+
+        <!-- STICKER LAB SECTION -->
+        <main id="sticker-mode" class="tool-section">
+            <section class="card" style="grid-column: span 2;">
+                <div class="card-title"><ion-icon name="sparkles-outline"></ion-icon> WhatsApp Sticker Lab</div>
+                <p class="subtitle" style="margin:0 0 1rem 0;">Created 512x512 transparent stickers with hidden data.
+                    Send as 'Document' to WhatsApp.</p>
+                <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 2.5rem;">
+                    <div>
+                        <div class="upload-area" id="sticker-upload-area" style="padding: 2rem 1rem;">
+                            <ion-icon name="happy-outline" style="font-size:3rem; color:var(--primary);"></ion-icon>
+                            <p>Upload Image or Icon</p>
+                            <img id="sticker-preview" src="" alt="Preview"
+                                style="display:none; margin-top:1rem; width:100px; height:100px; object-fit:contain;">
+                            <input type="file" id="sticker-file-input" accept="image/*" hidden>
+                        </div>
+                        <div class="input-group">
+                            <label>Sticker Theme</label>
+                            <select id="sticker-theme"
+                                style="width:100%; height:50px; background:rgba(0,0,0,0.6); border:1px solid var(--glass-border); border-radius:12px; color:white; padding:0 10px;">
+                                <option value="custom">Use Uploaded Image</option>
+                                <option value="ghost">Ghost (Gold/Transparent)</option>
+                                <option value="neon">Cyber-Neon Icon</option>
+                            </select>
+                        </div>
+                        <button id="btn-gen-sticker" class="btn btn-secondary"
+                            style="margin-top:10px; border-color:var(--primary);">
+                            <ion-icon name="color-palette-outline"></ion-icon> Generate Base
+                        </button>
+                    </div>
+                    <div>
+                        <div class="input-group">
+                            <label>Secret Sticker Message</label>
+                            <textarea id="sticker-secret" rows="4"
+                                placeholder="Hide a secret in the sticker bits..."></textarea>
+                        </div>
+                        <div class="input-group">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <label>Passphrase</label>
+                                <div style="display:flex; gap:5px;">
+                                    <button class="key-gen-btn" onclick="togglePass('sticker-pass', this)"
+                                        title="Toggle Visibility">
+                                        <ion-icon name="eye-outline"></ion-icon>
+                                    </button>
+                                    <button class="key-gen-btn"
+                                        onclick="generateSecureKey('sticker-pass', 'pass-strength-2');"
+                                        title="Generate Secure Key">
+                                        <ion-icon name="color-wand-outline"></ion-icon>
+                                    </button>
+                                </div>
+                            </div>
+                            <input type="password" id="sticker-pass" placeholder="AES-256 Key"
+                                oninput="checkEntropy(this, 'pass-strength-2')">
+                            <div
+                                style="width:100%; height:4px; background:rgba(255,255,255,0.05); margin-top:5px; border-radius:2px; overflow:hidden;">
+                                <div id="pass-strength-2" style="width:0%; height:100%; transition:0.3s;"></div>
+                            </div>
+                        </div>
+                        <button id="btn-sticker-encode" class="btn btn-primary">
+                            <ion-icon name="flash-outline"></ion-icon> Create Secure Sticker
+                        </button>
+                        <div class="capacity-container" style="margin-top:10px; display:block;">
+                            <label style="font-size:0.7rem; color:var(--text-muted);">STICKER DATA LOAD</label>
+                            <div
+                                style="width:100%; height:4px; background:rgba(255,255,255,0.1); border-radius:2px; margin-top:4px;">
+                                <div id="sticker-capacity-bar"
+                                    style="width:0%; height:100%; background:var(--primary); transition:0.3s;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <main id="deniable-mode" class="tool-section">
+            <section class="card" style="grid-column: span 2;">
+                <div class="card-title"><ion-icon name="finger-print-outline"></ion-icon> Deniable Encryption</div>
+                <p class="subtitle" style="margin:0 0 1rem 0;">Embed TWO secrets. Password A shows "Decoy" message.
+                    Password B shows "Real" message.</p>
+                <div class="upload-area" id="deniable-upload-area">
+                    <ion-icon name="images-outline" style="font-size:3rem; color:var(--primary);"></ion-icon>
+                    <p>Select Carrier Image</p>
+                    <img id="deniable-preview" src="" alt="Preview" style="display:none; margin-top:1rem;">
+                    <input type="file" id="deniable-file-input" accept="image/*" hidden>
+                </div>
+                <div class="deniable-grid">
+                    <div class="deniable-box decoy-layer">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <label style="color:#ef4444; font-weight:700; display:block; margin-bottom:10px;">DECOY
+                                LAYER (🔑 A)</label>
+                            <button class="key-gen-btn" onclick="genDecoy('msg-decoy')" title="Generate Random Decoy">
+                                <ion-icon name="chatbubble-outline"></ion-icon>
+                            </button>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <input type="password" id="pass-decoy" placeholder="Decoy Key"
+                                oninput="checkEntropy(this, 'pass-strength-decoy')" style="flex:1;">
+                            <button class="key-gen-btn" onclick="togglePass('pass-decoy', this)"
+                                title="Toggle Visibility">
+                                <ion-icon name="eye-outline"></ion-icon>
+                            </button>
+                        </div>
+                        <div
+                            style="width:100%; height:4px; background:rgba(255,255,255,0.05); margin-top:5px; margin-bottom:10px; border-radius:2px; overflow:hidden;">
+                            <div id="pass-strength-decoy" style="width:0%; height:100%; transition:0.3s;"></div>
+                        </div>
+                        <textarea id="msg-decoy" placeholder="Fake message..."></textarea>
+                    </div>
+                    <div class="deniable-box real-layer">
+                        <label style="color:#10b981; font-weight:700; display:block; margin-bottom:10px;">REAL LAYER (🔑
+                            B)</label>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <input type="password" id="pass-real" placeholder="Real Key"
+                                oninput="checkEntropy(this, 'pass-strength-real')" style="flex:1;">
+                            <button class="key-gen-btn" onclick="togglePass('pass-real', this)"
+                                title="Toggle Visibility">
+                                <ion-icon name="eye-outline"></ion-icon>
+                            </button>
+                        </div>
+                        <div
+                            style="width:100%; height:4px; background:rgba(255,255,255,0.05); margin-top:5px; margin-bottom:10px; border-radius:2px; overflow:hidden;">
+                            <div id="pass-strength-real" style="width:0%; height:100%; transition:0.3s;"></div>
+                        </div>
+                        <textarea id="msg-real" placeholder="Secret message..."></textarea>
+                    </div>
+                </div>
+                <button id="btn-deniable-encode" class="btn btn-primary btn-deniable">
+                    <ion-icon name="git-branch-outline"></ion-icon><span>Inject Deniable Layers</span>
+                </button>
+            </section>
+        </main>
+
+        <!-- GLOBAL DOWNLOAD AREA -->
+        <section id="result-area" style="display:none; margin-top:3rem;">
+            <div class="card" style="border-color: var(--primary);">
+                <div class="success-banner">
+                    <ion-icon name="shield-checkmark" style="font-size: 2.5rem; color: var(--primary)"></ion-icon>
+                    <div>
+                        <strong style="display: block;">Carrier Protocol Prepared</strong>
+                        <div style="display:flex; gap:10px; align-items:center; margin-top:5px;">
+                            <span id="integrity-hash"
+                                style="color: var(--text-muted); font-size: 0.7rem; font-family:monospace;">SHA-256
+                                Checksum Active</span>
+                            <span class="metadata-badge"><ion-icon name="finger-print-outline"></ion-icon> EXIF
+                                PURGED</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button id="btn-download" class="btn btn-primary" style="flex: 2;">
+                        Save Encoded Carrier
+                    </button>
+                    <button id="btn-clear" class="btn btn-secondary" style="flex: 1;">
+                        Wipe Session
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 SPECTRE | JIBINPALA | AES-256 | DENIABLE | GOLD EDITION</p>
+        </footer>
+    </div>
+
+    <!-- Background Work Canvases -->
+    <canvas id="canvas" class="hidden-canvas"></canvas>
+    <canvas id="orig-canvas" class="hidden-canvas"></canvas>
+
+    <script src="script.js?v=5.2"></script>
+</body>
+
+</html>
