@@ -31,6 +31,10 @@ window.checkMasterKey = () => {
         // Unlock Sequence
         gate.style.pointerEvents = 'none';
         gate.style.opacity = '0';
+
+        // --- 🔒 SESSION PERSISTENCE ---
+        sessionStorage.setItem('spectre_auth', 'true');
+
         showToast(`IDENTITY VERIFIED: ${mode.toUpperCase()} ACCESS GRANTED`);
 
         setTimeout(() => {
@@ -62,6 +66,15 @@ window.toggleFullscreen = () => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+    // --- 🔑 SESSION RELOAD CHECK ---
+    const gate = document.getElementById('master-gate');
+    const main = document.getElementById('main-content');
+    if (sessionStorage.getItem('spectre_auth') === 'true' && gate && main) {
+        gate.style.display = 'none';
+        main.style.filter = 'none';
+        main.style.pointerEvents = 'all';
+    }
+
     const gateInput = document.getElementById('master-key-input');
     if (gateInput) {
         gateInput.focus();
