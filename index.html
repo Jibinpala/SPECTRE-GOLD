@@ -18,43 +18,44 @@
 
 <body>
 
-    <div class="master-gate-content">
-        <img src="logo.png" alt="S-Logo" class="gate-logo">
-        <h2 class="gate-title">S-CORE CLIENT PORTAL</h2>
-        <p class="gate-subtitle">Encrypted Session Authentication Required</p>
+    <div id="master-gate">
+        <div class="master-gate-content">
+            <img src="logo.png" alt="S-Logo" class="gate-logo">
+            <h2 class="gate-title">S-CORE CLIENT PORTAL</h2>
+            <p class="gate-subtitle">Encrypted Session Authentication Required</p>
 
-        <div class="gate-controls">
-            <div class="input-group">
-                <div class="group-header">
-                    <label>ACCESS MODE</label>
-                    <span class="version-tag">SECURE_V5.8</span>
+            <div class="gate-controls">
+                <div class="input-group">
+                    <div class="group-header">
+                        <label>ACCESS MODE</label>
+                        <span class="version-tag">SECURE_V6.0</span>
+                    </div>
+                    <select id="access-mode" class="gate-select">
+                        <option value="client">CLIENT ACCESS</option>
+                        <option value="admin">ADMINISTRATOR</option>
+                    </select>
                 </div>
-                <select id="access-mode" class="gate-select">
-                    <option value="client">CLIENT ACCESS</option>
-                    <option value="admin">ADMINISTRATOR</option>
-                </select>
-            </div>
 
-            <div class="input-group">
-                <div class="input-with-actions">
-                    <input type="password" id="master-key-input" placeholder="ENTER ACCESS KEY">
-                    <div class="action-buttons-overlay">
-                        <button class="key-gen-btn" onclick="togglePass('master-key-input', this)"
-                            title="Toggle Visibility">
-                            <ion-icon name="eye-outline"></ion-icon>
-                        </button>
+                <div class="input-group">
+                    <div class="input-with-actions">
+                        <input type="password" id="master-key-input" placeholder="ENTER ACCESS KEY">
+                        <div class="action-buttons-overlay">
+                            <button class="key-gen-btn" onclick="togglePass('master-key-input', this)"
+                                title="Toggle Visibility">
+                                <ion-icon name="eye-outline"></ion-icon>
+                            </button>
+                        </div>
                     </div>
                 </div>
+
+                <button onclick="checkMasterKey()" class="btn btn-primary gate-btn">
+                    <ion-icon name="shield-checkmark-outline"></ion-icon>
+                    <span>AUTHORIZE SESSION</span>
+                </button>
             </div>
 
-            <button onclick="checkMasterKey()" class="btn btn-primary gate-btn">
-                <ion-icon name="shield-checkmark-outline"></ion-icon>
-                <span>AUTHORIZE SESSION</span>
-            </button>
+            <p id="gate-error" class="gate-error-msg">AUTH_FAILURE: INVALID KEY</p>
         </div>
-
-        <p id="gate-error" class="gate-error-msg">AUTH_FAILURE: INVALID KEY</p>
-    </div>
     </div>
 
     <div class="container" id="main-content" style="filter: blur(20px); pointer-events: none; transition: 1s ease;">
@@ -529,7 +530,7 @@
     <canvas id="canvas" class="hidden-canvas"></canvas>
     <canvas id="orig-canvas" class="hidden-canvas"></canvas>
 
-    <script src="script.js?v=5.9"></script>
+    <script src="script.js?v=6.0"></script>
 </body>
 
 </html>
