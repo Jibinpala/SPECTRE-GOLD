@@ -376,9 +376,11 @@
                                 placeholder="Hide a secret in the sticker bits..."></textarea>
                         </div>
                         <div class="input-group">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <label>Passphrase</label>
-                                <div style="display:flex; gap:5px;">
+                            <label>Passphrase</label>
+                            <div class="input-with-actions">
+                                <input type="password" id="sticker-pass" placeholder="AES-256 Key"
+                                    oninput="checkEntropy(this, 'pass-strength-2')">
+                                <div class="action-buttons-overlay">
                                     <button class="key-gen-btn" onclick="togglePass('sticker-pass', this)"
                                         title="Toggle Visibility">
                                         <ion-icon name="eye-outline"></ion-icon>
@@ -390,11 +392,8 @@
                                     </button>
                                 </div>
                             </div>
-                            <input type="password" id="sticker-pass" placeholder="AES-256 Key"
-                                oninput="checkEntropy(this, 'pass-strength-2')">
-                            <div
-                                style="width:100%; height:4px; background:rgba(255,255,255,0.05); margin-top:5px; border-radius:2px; overflow:hidden;">
-                                <div id="pass-strength-2" style="width:0%; height:100%; transition:0.3s;"></div>
+                            <div class="strength-meter-container">
+                                <div id="pass-strength-2" class="strength-bar"></div>
                             </div>
                         </div>
                         <button id="btn-sticker-encode" class="btn btn-primary">
@@ -433,17 +432,18 @@
                                 <ion-icon name="chatbubble-outline"></ion-icon>
                             </button>
                         </div>
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div class="input-with-actions" style="margin-top:10px;">
                             <input type="password" id="pass-decoy" placeholder="Decoy Key"
-                                oninput="checkEntropy(this, 'pass-strength-decoy')" style="flex:1;">
-                            <button class="key-gen-btn" onclick="togglePass('pass-decoy', this)"
-                                title="Toggle Visibility">
-                                <ion-icon name="eye-outline"></ion-icon>
-                            </button>
+                                oninput="checkEntropy(this, 'pass-strength-decoy')">
+                            <div class="action-buttons-overlay">
+                                <button class="key-gen-btn" onclick="togglePass('pass-decoy', this)"
+                                    title="Toggle Visibility">
+                                    <ion-icon name="eye-outline"></ion-icon>
+                                </button>
+                            </div>
                         </div>
-                        <div
-                            style="width:100%; height:4px; background:rgba(255,255,255,0.05); margin-top:5px; margin-bottom:10px; border-radius:2px; overflow:hidden;">
-                            <div id="pass-strength-decoy" style="width:0%; height:100%; transition:0.3s;"></div>
+                        <div class="strength-meter-container">
+                            <div id="pass-strength-decoy" class="strength-bar"></div>
                         </div>
                         <textarea id="msg-decoy" placeholder="Fake message..."></textarea>
                         <div class="capacity-container" style="margin-top:10px; display:block;">
@@ -459,17 +459,18 @@
                     <div class="deniable-box real-layer">
                         <label style="color:#10b981; font-weight:700; display:block; margin-bottom:10px;">REAL LAYER (🔑
                             B)</label>
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div class="input-with-actions" style="margin-top:10px;">
                             <input type="password" id="pass-real" placeholder="Real Key"
-                                oninput="checkEntropy(this, 'pass-strength-real')" style="flex:1;">
-                            <button class="key-gen-btn" onclick="togglePass('pass-real', this)"
-                                title="Toggle Visibility">
-                                <ion-icon name="eye-outline"></ion-icon>
-                            </button>
+                                oninput="checkEntropy(this, 'pass-strength-real')">
+                            <div class="action-buttons-overlay">
+                                <button class="key-gen-btn" onclick="togglePass('pass-real', this)"
+                                    title="Toggle Visibility">
+                                    <ion-icon name="eye-outline"></ion-icon>
+                                </button>
+                            </div>
                         </div>
-                        <div
-                            style="width:100%; height:4px; background:rgba(255,255,255,0.05); margin-top:5px; margin-bottom:10px; border-radius:2px; overflow:hidden;">
-                            <div id="pass-strength-real" style="width:0%; height:100%; transition:0.3s;"></div>
+                        <div class="strength-meter-container">
+                            <div id="pass-strength-real" class="strength-bar"></div>
                         </div>
                         <textarea id="msg-real" placeholder="Secret message..."></textarea>
                         <div class="capacity-container" style="margin-top:10px; display:block;">
@@ -525,7 +526,7 @@
     <canvas id="canvas" class="hidden-canvas"></canvas>
     <canvas id="orig-canvas" class="hidden-canvas"></canvas>
 
-    <script src="script.js?v=5.7"></script>
+    <script src="script.js?v=5.8"></script>
 </body>
 
 </html>

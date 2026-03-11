@@ -148,45 +148,49 @@ header {
 /* --- 📋 INPUT ACTIONS OVERLAY --- */
 .input-with-actions {
     position: relative;
-    display: flex;
-    align-items: center;
+    width: 100%;
 }
 
 .input-with-actions input {
-    padding-right: 80px !important;
-    /* Space for overlay buttons */
-    margin-bottom: 0 !important;
+    padding-right: 90px !important;
+    /* Ensure text doesn't hide under buttons */
+    margin: 0 !important;
 }
 
 .action-buttons-overlay {
     position: absolute;
-    right: 12px;
+    right: 15px;
     top: 50%;
     transform: translateY(-50%);
     display: flex;
-    gap: 8px;
-    z-index: 5;
+    gap: 12px;
+    z-index: 20;
+    pointer-events: none;
+    /* Let clicks pass to the buttons */
+    height: 100%;
+    align-items: center;
 }
 
 .action-buttons-overlay .key-gen-btn {
-    opacity: 0.6;
+    pointer-events: auto;
+    /* Re-enable for the actual buttons */
+    opacity: 0.8;
 }
 
 .action-buttons-overlay .key-gen-btn:hover {
     opacity: 1;
-    transform: none;
-    /* Disable rotation inside box for cleaner look */
     color: var(--primary);
+    transform: none;
 }
 
 .strength-meter-container {
     width: 100%;
     height: 4px;
     background: rgba(255, 255, 255, 0.05);
-    margin-top: 5px;
+    margin-top: 6px;
     border-radius: 2px;
     overflow: hidden;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 .strength-bar {
