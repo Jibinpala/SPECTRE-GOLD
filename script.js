@@ -74,10 +74,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- 🔒 STANDALONE INTERFACE PROTECTION ---
-    // Prevent right-click to hide browser source options
-    document.addEventListener('contextmenu', (e) => e.preventDefault());
+    // Removed contextmenu restriction to ensure native Copy/Paste always works.
 
-    // Prevent dragging images to new tabs
+    // Prevent dragging images only
     document.addEventListener('dragstart', (e) => {
         if (e.target.tagName === 'IMG') e.preventDefault();
     });
@@ -621,13 +620,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const updateCapacity = (input, bar, fileInput, mode) => {
         const file = fileInput.files[0];
         if (!file) return;
-        const msgLen = input.value.length * 8; // Bits
+
+        // Accurate bit estimation: (Message * AES overhead + Delimiter) * 8 bits
+        const msgLen = (input.value.length * 1.35 + 17) * 8;
+
+        if (mode === 'audio') {
+            const totalCapacity = (file.size - 44);
+            const percent = Math.min((msgLen / totalCapacity) * 100, 100);
+            bar.style.width = percent + '%';
+            bar.style.background = percent > 90 ? '#ef4444' : 'var(--primary)';
+            return;
+        }
+
         const img = new Image();
         img.src = URL.createObjectURL(file);
         img.onload = () => {
-            const isSticker = mode === 'sticker';
-            const pixels = isSticker ? (512 * 512) : (img.width * img.height);
-            const totalCapacity = isSticker ? pixels : (pixels * 3);
+            let totalCapacity = 0;
+            if (mode === 'sticker') {
+                totalCapacity = 512 * 512;
+            } else if (mode === 'deniable') {
+                totalCapacity = (img.width * img.height * 3) / 2;
+            } else {
+                totalCapacity = img.width * img.height * 3;
+            }
             const percent = Math.min((msgLen / totalCapacity) * 100, 100);
             bar.style.width = percent + '%';
             bar.style.background = percent > 90 ? '#ef4444' : 'var(--primary)';
@@ -639,9 +654,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const imgCapBar = document.getElementById('image-capacity-bar');
     const imgCapBox = document.getElementById('image-capacity-box');
 
-    if (imgMsgInput) {
-        imgMsgInput.oninput = () => updateCapacity(imgMsgInput, imgCapBar, imgFileIn, 'image');
-    }
+    if (imgMsgInput) imgMsgInput.oninput = () => updateCapacity(imgMsgInput, imgCapBar, imgFileIn, 'image');
     if (imgFileIn) {
         imgFileIn.onchange = (e) => {
             handleFilePreview(e.target.files[0], document.getElementById('embed-preview'), document.getElementById('embed-upload-area'));
@@ -653,8 +666,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const sMsgInput = document.getElementById('sticker-secret');
     const sFileIn = document.getElementById('sticker-file-input');
     const sCapBar = document.getElementById('sticker-capacity-bar');
-    if (sMsgInput) {
-        sMsgInput.oninput = () => updateCapacity(sMsgInput, sCapBar, sFileIn, 'sticker');
+    if (sMsgInput) sMsgInput.oninput = () => updateCapacity(sMsgInput, sCapBar, sFileIn, 'sticker');
+
+    const aMsgInput = document.getElementById('audio-payload');
+    const aFileIn = document.getElementById('audio-carrier-input');
+    const aCapBar = document.getElementById('audio-capacity-bar');
+    const aCapBox = document.getElementById('audio-capacity-box');
+    if (aMsgInput) aMsgInput.oninput = () => updateCapacity(aMsgInput, aCapBar, aFileIn, 'audio');
+    if (aFileIn) {
+        aFileIn.onchange = () => {
+            if (aCapBox) aCapBox.style.display = 'block';
+            updateCapacity(aMsgInput, aCapBar, aFileIn, 'audio');
+        };
+    }
+
+    const denDecoyInput = document.getElementById('msg-decoy');
+    const denRealInput = document.getElementById('msg-real');
+    const denFileIn = document.getElementById('deniable-file-input');
+    const denDecoyBar = document.getElementById('den-decoy-capacity-bar');
+    const denRealBar = document.getElementById('den-real-capacity-bar');
+
+    if (denDecoyInput) denDecoyInput.oninput = () => updateCapacity(denDecoyInput, denDecoyBar, denFileIn, 'deniable');
+    if (denRealInput) denRealInput.oninput = () => updateCapacity(denRealInput, denRealBar, denFileIn, 'deniable');
+    if (denFileIn) {
+        denFileIn.onchange = (e) => {
+            handleFilePreview(e.target.files[0], document.getElementById('deniable-preview'), document.getElementById('deniable-upload-area'));
+            updateCapacity(denDecoyInput, denDecoyBar, denFileIn, 'deniable');
+            updateCapacity(denRealInput, denRealBar, denFileIn, 'deniable');
+        };
     }
 
     // --- 📋 TEXT CLIPBOARD ---
@@ -721,4 +760,26 @@ window.togglePass = (id, btn) => {
         icon.name = 'eye-outline';
         showToast('Passphrase Hidden');
     }
+};
+
+window.pasteTo = (id) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    // Check if Clipboard API is available (usually requires HTTPS)
+    if (!navigator.clipboard || !navigator.clipboard.readText) {
+        showToast('Use Long-Press to Paste (HTTPS required for button)', 'error');
+        el.focus(); // Focus to help user paste manually
+        return;
+    }
+
+    navigator.clipboard.readText().then(text => {
+        el.value = text;
+        showToast('Text Pasted Successfully');
+        // Trigger any input events if needed
+        el.dispatchEvent(new Event('input'));
+    }).catch(err => {
+        console.error("Paste Error:", err);
+        showToast('Permission Denied. Use Long-Press instead.', 'error');
+    });
 };

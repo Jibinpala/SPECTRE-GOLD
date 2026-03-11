@@ -196,6 +196,15 @@
                 <button id="btn-audio-encode" class="btn btn-primary">
                     <ion-icon name="pulse-outline"></ion-icon><span>Hide in Audio</span>
                 </button>
+                <div class="capacity-container" style="margin-top:10px; display:none;" id="audio-capacity-box">
+                    <label style="font-size:0.7rem; color:var(--text-muted);">AUDIO CAPACITY</label>
+                    <div
+                        style="width:100%; height:4px; background:rgba(255,255,255,0.1); border-radius:2px; margin-top:4px;">
+                        <div id="audio-capacity-bar"
+                            style="width:0%; height:100%; background:var(--primary); transition:0.3s; box-shadow:0 0 10px var(--primary);">
+                        </div>
+                    </div>
+                </div>
             </section>
             <section class="card">
                 <div class="card-title"><ion-icon name="play-outline"></ion-icon> Audio Extractor</div>
@@ -259,7 +268,12 @@
             <section class="card">
                 <div class="card-title"><ion-icon name="scan-outline"></ion-icon> Reveal from Text</div>
                 <div class="input-group">
-                    <label>Paste Stego-Text</label>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                        <label>Paste Stego-Text</label>
+                        <button class="key-gen-btn" onclick="pasteTo('text-input-reveal')" title="Paste from Clipboard">
+                            <ion-icon name="clipboard-outline"></ion-icon> Paste
+                        </button>
+                    </div>
                     <textarea id="text-input-reveal" rows="8" placeholder="Paste text containing secrets..."></textarea>
                 </div>
                 <div class="input-group">
@@ -416,6 +430,15 @@
                             <div id="pass-strength-decoy" style="width:0%; height:100%; transition:0.3s;"></div>
                         </div>
                         <textarea id="msg-decoy" placeholder="Fake message..."></textarea>
+                        <div class="capacity-container" style="margin-top:10px; display:block;">
+                            <label style="font-size:0.6rem; color:var(--text-muted);">DECOY PAYLOAD LOAD</label>
+                            <div
+                                style="width:100%; height:4px; background:rgba(255,255,255,0.1); border-radius:2px; margin-top:4px;">
+                                <div id="den-decoy-capacity-bar"
+                                    style="width:0%; height:100%; background:var(--primary); transition:0.3s; box-shadow:0 0 10px var(--primary);">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="deniable-box real-layer">
                         <label style="color:#10b981; font-weight:700; display:block; margin-bottom:10px;">REAL LAYER (🔑
@@ -433,6 +456,15 @@
                             <div id="pass-strength-real" style="width:0%; height:100%; transition:0.3s;"></div>
                         </div>
                         <textarea id="msg-real" placeholder="Secret message..."></textarea>
+                        <div class="capacity-container" style="margin-top:10px; display:block;">
+                            <label style="font-size:0.6rem; color:var(--text-muted);">REAL PAYLOAD LOAD</label>
+                            <div
+                                style="width:100%; height:4px; background:rgba(255,255,255,0.1); border-radius:2px; margin-top:4px;">
+                                <div id="den-real-capacity-bar"
+                                    style="width:0%; height:100%; background:var(--primary); transition:0.3s; box-shadow:0 0 10px var(--primary);">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <button id="btn-deniable-encode" class="btn btn-primary btn-deniable">
@@ -477,7 +509,7 @@
     <canvas id="canvas" class="hidden-canvas"></canvas>
     <canvas id="orig-canvas" class="hidden-canvas"></canvas>
 
-    <script src="script.js?v=5.2"></script>
+    <script src="script.js?v=5.4"></script>
 </body>
 
 </html>
